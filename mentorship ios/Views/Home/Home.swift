@@ -14,6 +14,18 @@ struct Home: View {
         return homeViewModel.relationsListData
     }
     
+    var userFirstName: String {
+        
+        //Return just the first name
+        if let editFullName = self.homeViewModel.userName?.capitalized {
+            let trimmedFullName = editFullName.trimmingCharacters(in: .whitespaces)
+            let userNameAsArray = trimmedFullName.components(separatedBy: " ")
+            return userNameAsArray[0]
+        }
+        return ""
+        
+    }
+      
     func useHomeService() {
         // fetch dashboard and map to home view model
         self.homeService.fetchDashboard { home in
@@ -37,7 +49,7 @@ struct Home: View {
     
     var body: some View {
         NavigationView {
-            List {
+            Form {
                 //Top space
                 Section {
                     EmptyView()
@@ -69,9 +81,8 @@ struct Home: View {
                 TasksSection(tasks: homeViewModel.homeResponseData.tasksDone)
 
             }
-            .listStyle(GroupedListStyle())
             .environment(\.horizontalSizeClass, .regular)
-            .navigationBarTitle("Welcome \(self.homeViewModel.userName?.capitalized ?? "")!")
+            .navigationBarTitle("Welcome \(userFirstName)!")
             .navigationBarItems(trailing:
                 NavigationLink(destination: ProfileSummary()) {
                         Image(systemName: ImageNameConstants.SFSymbolConstants.profileIcon)
